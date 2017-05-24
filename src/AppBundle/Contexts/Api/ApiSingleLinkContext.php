@@ -12,6 +12,7 @@ namespace AppBundle\Contexts\Api;
 use AppBundle\Model\LinkModel;
 use AppBundle\Services\ApiPrepared as jresponse;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Response;
 
 class ApiSingleLinkContext extends LinkModel
 {
@@ -29,6 +30,9 @@ class ApiSingleLinkContext extends LinkModel
 
     public function getSingleLinkResponse($id){
         $link = $this->getSingleLink($id);
+        if(!$link){
+            return $this->jsonRepsonse->error(array('Link not found'), Response::HTTP_NOT_FOUND);
+        }
         return $this->jsonRepsonse->success(parent::toArray($link));
     }
 }
