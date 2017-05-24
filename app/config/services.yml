@@ -1,0 +1,23 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/service_container.html
+parameters:
+    #parameter_name: value
+
+services:
+    #service_name:
+    #    class: AppBundle\Directory\ClassName
+    #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
+    app.services.json_response:
+        class: AppBundle\Services\ApiPrepared
+
+    app.contexts_api.api_all_links_context:
+        class: AppBundle\Contexts\Api\ApiAllLinksContext
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
+
+    app.contexts_api.api_single_link_context:
+        class: AppBundle\Contexts\Api\ApiSingleLinkContext
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
+
+    app.contexts_api.api_create_link_context:
+        class: AppBundle\Contexts\Api\ApiCreateLinkContext
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
