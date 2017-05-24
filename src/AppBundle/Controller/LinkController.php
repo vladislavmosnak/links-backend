@@ -20,7 +20,7 @@ class LinkController extends Controller
         $allLinksResponse   = $allLinksContext->getAllLinksResponse();
         return JsonResponse::create($allLinksResponse->getData(), $allLinksResponse->getCode());
     }
-
+ 
     public function singleAction($id){
         $singleLinkContex = $this->get('app.contexts_api.api_single_link_context');
         $linkResponse = $singleLinkContex->getSingleLinkResponse($id);
