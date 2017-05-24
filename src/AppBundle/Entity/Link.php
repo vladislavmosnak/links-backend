@@ -49,6 +49,12 @@ class Link
      */
     private $description;
 
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $image;
+
     /**
      * Get id
      *
@@ -122,6 +128,23 @@ class Link
     {
         $this->category = $category;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param mixed $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
 
 
 }

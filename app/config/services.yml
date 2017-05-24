@@ -10,6 +10,9 @@ services:
     app.services.json_response:
         class: AppBundle\Services\ApiPrepared
 
+    app.services.image_from_url:
+        class: AppBundle\Services\ImageFromUrl
+
     app.contexts_api.api_all_links_context:
         class: AppBundle\Contexts\Api\ApiAllLinksContext
         arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
@@ -20,4 +23,4 @@ services:
 
     app.contexts_api.api_create_link_context:
         class: AppBundle\Contexts\Api\ApiCreateLinkContext
-        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.services.image_from_url']

@@ -12,39 +12,41 @@ namespace AppBundle\Contexts\Api;
 use AppBundle\Entity\Link;
 use AppBundle\Model\LinkModel;
 use AppBundle\Services\ApiPrepared;
+use AppBundle\Services\ImageFromUrl;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ApiCreateLinkContext extends LinkModel
 {
 
     private $em;
     private $jsonRepsonse;
-    private $requestData = array(
-        'url'           => '',
-        'title'         => '',
-        'description'   => '',
-        'category'      => ''
+    private $imageFromUrl;
+    private $data = array(
+        'url'           => null,
+        'title'         => null,
+        'description'   => null,
+        'category'      => null,
+        'image'         => null
     );
 
-    public function __construct(EntityManager $entityManager, ApiPrepared $jsonResponse){
+    public function __construct(
+        EntityManager $entityManager,
+        ApiPrepared $jsonResponse,
+        ImageFromUrl $imageFromUrl
+    ){
         $this->em           = $entityManager;
         $this->jsonRepsonse = $jsonResponse;
+        $this->imageFromUrl = $imageFromUrl;
     }
 
-    public function createLink(array $data){
-        $url            = $data['url'];
-        $title          = $data['title'];
-        $description    = $data['description'];
-        $categoryId     = $data['category'];
-
-        $category = $this->em->getRepository('AppBundle:LinkCategory')->find($categoryId);
-
+    public function createLink(){
         $newLink = new Link();
-        $newLink->setDescription($description);
-        $newLink->setTitle($title);
-        $newLink->setUrl($url);
-        $newLink->setCategory($category);
+        $newLink->setDescription($this->data['description']);
+        $newLink->setTitle($this->data['title']);
+        $newLink->setUrl($this->data['url']);
+        $newLink->setCategory($this->data['category']);
+        $newLink->setImage($this->data['image']);
 
         $this->em->persist($newLink);
         $this->em->flush();
@@ -52,36 +54,35 @@ class ApiCreateLinkContext extends LinkModel
         return $newLink;
     }
 
-    public function createLinkResponse(array $data){
-        $newLink = $this->createLink($data);
-        return $this->jsonRepsonse->success(parent::toArray($newLink), 'Link created');
+    public function createLinkResponse(){
+        $newLink = $this->createLink();
+        return $this->jsonRepsonse->success(parent::toArray($newLink), 'Link created', Response::HTTP_CREATED);
     }
 
-    public function isRequestValidInContext(array $data){
+    public function populateAndValidate(array $data){
         $errors = array();
 
-        foreach ($this->requestData as $key => $val){
-            if(!isset($data[$key])) $errors[] = 'Missing ' . $key;
-            $this->requestData[$key] = $data['key'];
-        }
+        $notRequiredFromRequest = array('image');
 
-        if(isset($data['category'])){
-            $categoryId = $data['category'];
-            $category = $this->em->getRepository('AppBundle:LinkCategory')->find($categoryId);
-            if(!$category){
-                $errors[] = 'No category for ID: ' . $categoryId;
+        foreach ($this->data as $key => $val){
+            if(!isset($data[$key])){
+                if(!in_array($key, $notRequiredFromRequest)) $errors[] = 'Missing ' . $key;
             }
+            else $this->data[$key] = $data[$key];
         }
-        else $errors[] = 'Missing category';
 
-        if(count($errors) == 0){
-            return true;
+        if(count($errors)){
+            return $this->jsonRepsonse->error($errors, Response::HTTP_BAD_REQUEST);
         }
-        $this->jsonRepsonse->error($errors, 400);
-        return false;
-    }
 
-    public function getContextData(){
-        return $this->jsonRepsonse->getData();
+        $this->data['category'] = $this->em->getRepository('AppBundle:LinkCategory')->find($this->data['category']);
+        if(!$this->data['category']){
+            $errors[] = 'No category for ID: ' . $data['category'];
+            $this->jsonRepsonse->error($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $this->data['image'] = $this->imageFromUrl->getImage($this->data['url']);
+
+        return true;
     }
 }
