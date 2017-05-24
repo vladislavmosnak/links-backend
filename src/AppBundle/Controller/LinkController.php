@@ -36,4 +36,9 @@ class LinkController extends Controller
         $newLinkResponse = $newLinkContext->createLinkResponse();
         return JsonResponse::create($newLinkResponse->getData(), $newLinkResponse->getCode());
     }
+
+    public function searchAction(Request $request){
+        $searchContext = $this->get('app.contexts_api.api_search_link_context');
+        $searchContext->getBy($request->request->all());
+    }
 }

@@ -14,3 +14,8 @@ newlink:
     path: /api/link
     defaults: { _controller: AppBundle:Link:create }
     methods: [POST]
+
+searchlink:
+    path: /api/link/search
+    defaults: { _controller: AppBundle:Link:search }
+    methods: [GET]
