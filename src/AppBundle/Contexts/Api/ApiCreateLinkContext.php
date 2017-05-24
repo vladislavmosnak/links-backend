@@ -78,7 +78,7 @@ class ApiCreateLinkContext extends LinkModel
         $this->data['category'] = $this->em->getRepository('AppBundle:LinkCategory')->find($this->data['category']);
         if(!$this->data['category']){
             $errors[] = 'No category for ID: ' . $data['category'];
-            $this->jsonRepsonse->error($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->jsonRepsonse->error($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $this->data['image'] = $this->imageFromUrl->getImage($this->data['url']);
