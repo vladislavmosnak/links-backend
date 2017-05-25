@@ -88,7 +88,6 @@ class ApiCreateAutoPopulateContext extends LinkModel
             return $this->jsonRepsonse->error($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-
         if(!$this->urlValidator->isUrlValid($this->data['url'])){
             return $this->jsonResponse->error(array('Url is not valid'), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -99,8 +98,8 @@ class ApiCreateAutoPopulateContext extends LinkModel
         //TODO what if extractor fails in just one field?
         $extractedDataFromUrl = $this->urlExtractor->getDataFromUrl($this->data['url']);
         if($extractedDataFromUrl) {
-            (isset($extractedDataFromUrl['title'])) ? $this->data['title'] = $extractedDataFromUrl['title'] : $this->data['title'] = '';
-            (isset($extractedDataFromUrl['description'])) ? $this->data['description'] = $extractedDataFromUrl['title'] : $this->data['description'] = '';
+            (isset($extractedDataFromUrl['title'])) ? $this->data['title'] = $extractedDataFromUrl['title'] : $this->data['title'] = 'Default title';
+            (isset($extractedDataFromUrl['description'])) ? $this->data['description'] = $extractedDataFromUrl['title'] : $this->data['description'] = 'Default description';
         }else{
             return $this->jsonRepsonse->error($errors, Response::HTTP_EXPECTATION_FAILED, 'Cant procces url data');
         }

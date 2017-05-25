@@ -37,7 +37,10 @@ class LinkModel
             'url'           => $link->getUrl(),
             'title'         => $link->getTitle(),
             'description'   => $link->getDescription(),
-            'category'      => $link->getCategory()->getCategoryName()
+            'category'      => array(
+                'id'    => $link->getCategory()->getId(),
+                'name'  => $link->getCategory()->getCategoryName()
+            )
         );
     }
 }

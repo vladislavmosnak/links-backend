@@ -39,6 +39,7 @@ class Link
     /**
      * @ORM\Column(type="string")
      * @Assert\NotNull();
+     * @Assert\NotBlank()
      */
     private $title;
 
@@ -46,14 +47,23 @@ class Link
     /**
      * @ORM\Column(type="string")
      * @Assert\NotNull();
+     * @Assert\NotBlank()
      */
     private $description;
 
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotNull();
+     * @Assert\NotBlank()
      */
     private $image;
+
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $author;
 
     /**
      * Get id
@@ -143,6 +153,22 @@ class Link
     public function setImage($image)
     {
         $this->image = $image;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param mixed $author
+     */
+    public function setAuthor($author)
+    {
+        $this->author = $author;
     }
 
 
