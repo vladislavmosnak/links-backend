@@ -13,9 +13,6 @@ use AppBundle\Entity\Link;
 
 class LinkModel
 {
-    public function __construct()
-    {
-    }
 
     protected function toArray(Link $link){
         return array(

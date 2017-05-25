@@ -41,4 +41,15 @@ class LinkController extends Controller
         $searchContext = $this->get('app.contexts_api.api_search_link_context');
         $searchContext->getBy($request->request->all());
     }
+
+    public function getUrlInfoAction(Request $request){
+        $getUrlInfoContext = $this->get('app.contexts_api.get_url_info_context');
+        $data = $request->query->all();
+        $getUrlInfoContextValidationRepsonse = $getUrlInfoContext->populateAndValidate($data);
+        if($getUrlInfoContextValidationRepsonse !== true){
+            return JsonResponse::create($getUrlInfoContextValidationRepsonse->getData(), $getUrlInfoContextValidationRepsonse->getCode());
+        }
+        $getUrlInfoContextDataResponse = $getUrlInfoContext->extractInfoFromUrlResponse();
+        return JsonResponse::create($getUrlInfoContextDataResponse->getData(), $getUrlInfoContextDataResponse->getCode());
+    }
 }

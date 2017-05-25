@@ -14,7 +14,7 @@ class ApiPrepared
     private $code;
     private $data;
 
-    public function success(array $data, $message = '', $code){
+    public function success(array $data, $message = '', $code = 200){
         $this->code = $code;
         $this->data = array(
             'status' => true,

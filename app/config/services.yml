@@ -13,6 +13,12 @@ services:
     app.services.image_from_url:
         class: AppBundle\Services\ImageFromUrl
 
+    app.services.url_validator:
+        class: AppBundle\Services\UrlValidator
+
+    app.services.url_extractor:
+        class: AppBundle\Services\UrlExtractor
+
     app.contexts_api.api_all_links_context:
         class: AppBundle\Contexts\Api\ApiAllLinksContext
         arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
@@ -28,3 +34,7 @@ services:
     app.contexts_api.api_search_link_context:
         class: AppBundle\Contexts\Api\ApiSearchLinkContext
         arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
+
+    app.contexts_api.get_url_info_context:
+        class: AppBundle\Contexts\Api\GetUrlInfoContext
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.services.url_validator', '@app.services.url_extractor']

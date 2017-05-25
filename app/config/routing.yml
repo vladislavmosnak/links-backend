@@ -19,3 +19,8 @@ searchlink:
     path: /api/link/search
     defaults: { _controller: AppBundle:Link:search }
     methods: [GET]
+
+getinfofromurl:
+    path: /api/link/getinfo
+    defaults: { _controller: AppBundle:Link:getUrlInfo }
+    methods: [GET]

@@ -12,6 +12,7 @@ namespace AppBundle\Contexts\Api;
 use AppBundle\Model\LinkModel;
 use AppBundle\Services\ApiPrepared;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Response;
 
 class ApiAllLinksContext extends LinkModel
 {
@@ -33,6 +34,6 @@ class ApiAllLinksContext extends LinkModel
         foreach ($allLinks as $link){
             $allLinksArray[] = parent::toArray($link);
         }
-        return $this->jsonRepsonse->success($allLinksArray, 'All Links');
+        return $this->jsonRepsonse->success($allLinksArray, 'All Links', Response::HTTP_OK);
     }
 }
