@@ -10,9 +10,26 @@ namespace AppBundle\Model;
 
 
 use AppBundle\Entity\Link;
+use AppBundle\Entity\LinkCategory;
 
 class LinkModel
 {
+
+    public function populateLink(
+        $title,
+        $description,
+        $url,
+        LinkCategory $category,
+        $image
+    ){
+        $newLink = new Link();
+        $newLink->setDescription($description);
+        $newLink->setTitle($title);
+        $newLink->setUrl($url);
+        $newLink->setCategory($category);
+        $newLink->setImage($image);
+        return $newLink;
+    }
 
     protected function toArray(Link $link){
         return array(

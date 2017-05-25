@@ -12,10 +12,16 @@ namespace AppBundle\Services;
 class UrlExtractor
 {
     //TODO make smarter extractor
+    //TODO add image to response
     public function getDataFromUrl($url){
+        $return = array(
+            'title'         => null,
+            'description'   => null
+        );
         $metaData = get_meta_tags($url);
-        if(isset($metaData['title'], $metaData['description'])) return $metaData;
-        return false;
+        if(isset($metaData['title']))       $return['title'] = $metaData['title'];
+        if(isset($metaData['description'])) $return['description'] = $metaData['description'];
+        return $return;
     }
 
 }

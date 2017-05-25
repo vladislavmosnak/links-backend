@@ -37,6 +37,17 @@ class LinkController extends Controller
         return JsonResponse::create($newLinkResponse->getData(), $newLinkResponse->getCode());
     }
 
+    public function createAutoPopulateAction(Request $request){
+        $autopopulateContext = $this->get('app.contexts_api.api_create_auto_populate_context');
+        $data = $request->request->all();
+        $validationResponse = $autopopulateContext->populateAndValidate($data);
+        if($validationResponse !== true){
+            return JsonResponse::create($validationResponse->getData(), $validationResponse->getCode());
+        }
+        $newLinkResponse = $autopopulateContext->createLinkResponse();
+        return JsonResponse::create($newLinkResponse->getData(), $newLinkResponse->getCode());
+    }
+
     public function searchAction(Request $request){
         $searchContext = $this->get('app.contexts_api.api_search_link_context');
         $searchContext->getBy($request->request->all());

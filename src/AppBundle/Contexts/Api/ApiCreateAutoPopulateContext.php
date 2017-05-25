@@ -1,42 +1,49 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: vladi
- * Date: 21.5.2017.
- * Time: 19.57
+ * User: vmosnak
+ * Date: 5/25/17
+ * Time: 1:37 PM
  */
 
 namespace AppBundle\Contexts\Api;
 
+
 use AppBundle\Model\LinkModel;
 use AppBundle\Services\ApiPrepared;
 use AppBundle\Services\ImageFromUrl;
+use AppBundle\Services\UrlExtractor;
+use AppBundle\Services\UrlValidator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiCreateLinkContext extends LinkModel
+class ApiCreateAutoPopulateContext extends LinkModel
 {
 
     private $em;
     private $jsonRepsonse;
     private $imageFromUrl;
+    private $urlExtractor;
+    private $urlValidator;
     private $data = array(
-        'url'           => null,
         'title'         => null,
+        'url'           => null,
         'description'   => null,
         'category'      => null,
-        'image'         => null,
-        'autopopulate'  => false
+        'image'         => null
     );
 
     public function __construct(
         EntityManager $entityManager,
-        ApiPrepared $jsonResponse,
-        ImageFromUrl $imageFromUrl
-    ){
+        ApiPrepared $apiPrepared,
+        ImageFromUrl $imageFromUrl,
+        UrlExtractor $urlExtractor,
+        UrlValidator $urlValidator){
         $this->em           = $entityManager;
-        $this->jsonRepsonse = $jsonResponse;
+        $this->jsonRepsonse = $apiPrepared;
         $this->imageFromUrl = $imageFromUrl;
+        $this->urlExtractor = $urlExtractor;
+        $this->urlValidator = $urlValidator;
     }
 
     public function createLink(){
@@ -47,6 +54,7 @@ class ApiCreateLinkContext extends LinkModel
             $this->data['category'],
             $this->data['image']
         );
+
         $this->em->persist($newLink);
         $this->em->flush();
 
@@ -58,10 +66,10 @@ class ApiCreateLinkContext extends LinkModel
         return $this->jsonRepsonse->success(parent::toArray($newLink), 'Link created', Response::HTTP_CREATED);
     }
 
-    public function populateAndValidate(array $data){
+    public function populateAndValidate($data){
         $errors = array();
 
-        $notRequiredFromRequest = array('image');
+        $notRequiredFromRequest = array('title', 'description', 'image');
 
         foreach ($this->data as $key => $val){
             if(!isset($data[$key])){
@@ -80,11 +88,25 @@ class ApiCreateLinkContext extends LinkModel
             return $this->jsonRepsonse->error($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        //TODO add url validation
+
+        if(!$this->urlValidator->isUrlValid($this->data['url'])){
+            return $this->jsonResponse->error(array('Url is not valid'), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         //TODO move imageFromUrl logic to UrlExtractor
         $this->data['image'] = $this->imageFromUrl->getImage($this->data['url']);
 
+        //TODO what if extractor fails in just one field?
+        $extractedDataFromUrl = $this->urlExtractor->getDataFromUrl($this->data['url']);
+        if($extractedDataFromUrl) {
+            (isset($extractedDataFromUrl['title'])) ? $this->data['title'] = $extractedDataFromUrl['title'] : $this->data['title'] = '';
+            (isset($extractedDataFromUrl['description'])) ? $this->data['description'] = $extractedDataFromUrl['title'] : $this->data['description'] = '';
+        }else{
+            return $this->jsonRepsonse->error($errors, Response::HTTP_EXPECTATION_FAILED, 'Cant procces url data');
+        }
+
         return true;
+
     }
+
 }

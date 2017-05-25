@@ -31,6 +31,10 @@ services:
         class: AppBundle\Contexts\Api\ApiCreateLinkContext
         arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.services.image_from_url']
 
+    app.contexts_api.api_create_auto_populate_context:
+        class: AppBundle\Contexts\Api\ApiCreateAutoPopulateContext
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.services.image_from_url', '@app.services.url_extractor', '@app.services.url_validator']
+
     app.contexts_api.api_search_link_context:
         class: AppBundle\Contexts\Api\ApiSearchLinkContext
         arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']

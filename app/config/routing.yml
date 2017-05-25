@@ -15,6 +15,10 @@ newlink:
     defaults: { _controller: AppBundle:Link:create }
     methods: [POST]
 
+newlinkautopopulate:
+    path: /api/link/autopopulate
+    defaults: { _controller: AppBundle:Link:createAutoPopulate }
+
 searchlink:
     path: /api/link/search
     defaults: { _controller: AppBundle:Link:search }

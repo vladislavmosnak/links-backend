@@ -39,12 +39,14 @@ class GetUrlInfoContext extends LinkModel
     }
 
     public function extractInfoFromUrl(){
+        $data = array();
+
         $extractedDataFromUrl = $this->urlExtractor->getDataFromUrl($this->data['url']);
-        if($extractedDataFromUrl) return array(
-            'title' => $extractedDataFromUrl['title'],
-            'description' => $extractedDataFromUrl['description']
-        );
-        return array();
+
+        (isset($extractedDataFromUrl['title'])) ? $this->data['title']              = $data['title'] : $this->data['title'] = '';
+        (isset($extractedDataFromUrl['description'])) ? $this->data['description']  = $data['description'] : $this->data['description'] = '';
+        
+        return $data;
     }
 
     public function extractInfoFromUrlResponse(){
