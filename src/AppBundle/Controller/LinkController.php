@@ -11,6 +11,38 @@ class LinkController extends Controller
     /**
      * ### Get all links ##
      *
+     * ### SUCCESS RESPONSE ###
+     * {
+     *" status": true,
+     *  "message": "All Links",
+     *  "data": [
+     *  {
+     *      "id": 1,
+            *"url": "https://blog.embed.ly/creating-a-facebook-like-url-submission-tool-with-embedly-ed00dcc91c62",
+     *      "title": "Creating a Facebook-like URL submission tool with Embedly",
+     *      "description": "One of our clients is currently using Ext and Embedly to implement a Facebook-like link submission tool. While writing up some examples we went overboard and ended up coding the whole thing. It’s…",
+     *      "image": "dummy image",
+     *      "author": "",
+     *      "category": {
+     *          "id": 1,
+     *          "name": "learning"
+     *      }
+     *  },
+     *  {
+     *      "id": 1,
+     *      "url": "https://blog.embed.ly/creating-a-facebook-like-url-submission-tool-with-embedly-ed00dcc91c62",
+     *      "title": "Creating a Facebook-like URL submission tool with Embedly",
+     *      "description": "One of our clients is currently using Ext and Embedly to implement a Facebook-like link submission tool. While writing up some examples we went overboard and ended up coding the whole thing. It’s…",
+     *      "image": "dummy image",
+     *      "author": "",
+     *      "category": {
+     *          "id": 1,
+     *          "name": "learning"
+     *      }
+     *  },
+     *]
+     *}
+     *
      * @ApiDoc(description="Get all links")
      */
     public function allAction(){
@@ -21,6 +53,33 @@ class LinkController extends Controller
 
     /**
      * ### Get single link ##
+     *
+     * ### SUCCESS RESPONSE ###
+     * {
+     *    "status": true,
+     *    "message": "",
+     *    "data": {
+     *      "id": 1,
+     *      "url": "https://blog.embed.ly/creating-a-facebook-like-url-submission-tool-with-embedly-ed00dcc91c62",
+     *      "title": "Creating a Facebook-like URL submission tool with Embedly",
+     *      "description": "One of our clients is currently using Ext and Embedly to implement a Facebook-like link submission tool. While writing up some examples we went overboard and ended up coding the whole thing. It’s…",
+     *      "image": "dummy image",
+     *      "author": "",
+     *      "category": {
+     *          "id": 1,
+     *          "name": "learning"
+     *      }
+     *    }
+     * }
+     *
+     * ### NONT FOUND RESPONSE ###
+     * {
+     *  "status": false,
+     *  "message": "",
+     *  "data": [
+     *      "Link not found"
+     *  ]
+     * }
      *
      * @ApiDoc(description="Get single link")
      */
@@ -107,6 +166,46 @@ class LinkController extends Controller
      * In case no autopopulated data, if provided optional params will bi used,
      * if not, default one will be set to url property
      *
+     * ### SUCCESS RESPONSE ###
+     *  {
+     *   "status": true,
+     *   "message": "Link created",
+     *   "data": {
+     *       "id": 24,
+     *       "url": "http://google.rs",
+     *       "title": "213",
+     *       "description": "qaweqw",
+     *       "image": "Default image",
+     *       "author": "Unknown author",
+     *       "category": {
+     *           "id": 1,
+     *           "name": "learning"
+     *       }
+     *   }
+     * }
+     *
+     * ### BAD REQUEST RESPONSE ###
+     * {
+     *  "status": false,
+     *  "message": "",
+     *  "data": [
+     *      "Missing url",
+     *      "Missing title",
+     *      "Missing description",
+     *      "Missing category"
+     *  ]
+     * }
+     *
+     * ### UNPROCESSABLE RESPONSE ###
+     *
+     * {
+     *  "status": false,
+     *  "message": "",
+     *  "data": [
+     *      "Url is not valid"
+     *  ]
+     * }
+     *
      * @ApiDoc(
      *     description="Creates new link - autopopulates link properties",
      *     parameters={
@@ -142,6 +241,7 @@ class LinkController extends Controller
         $searchContext->getBy($request->request->all());
     }
 
+    //TODO adddocs here
     /**
      * ### Get infro about URL ###
      * Provides info line title, description, keywords, etc
