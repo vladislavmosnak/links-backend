@@ -12,4 +12,5 @@
 /composer.phar
 .idea/workspace.xml
 .idea/
-
+error.log
+requests.log

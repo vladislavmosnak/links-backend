@@ -20,14 +20,22 @@ class LinkModel
         $description,
         $url,
         LinkCategory $category,
-        $image
+        $image,
+        $author
     ){
+
+        if(!$title)         $title                  = 'Default title';
+        if(!$description)   $description            = 'Default description';
+        if(!$image)         $image                  = 'Default image';
+        if(!$author)        $author                 = 'Unknown author';
+
         $newLink = new Link();
         $newLink->setDescription($description);
         $newLink->setTitle($title);
         $newLink->setUrl($url);
         $newLink->setCategory($category);
         $newLink->setImage($image);
+        $newLink->setAuthor($author);
         return $newLink;
     }
 
@@ -37,6 +45,8 @@ class LinkModel
             'url'           => $link->getUrl(),
             'title'         => $link->getTitle(),
             'description'   => $link->getDescription(),
+            'image'         => $link->getImage(),
+            'author'        => $link->getAuthor(),
             'category'      => array(
                 'id'    => $link->getCategory()->getId(),
                 'name'  => $link->getCategory()->getCategoryName()

@@ -11,6 +11,8 @@ namespace AppBundle\Contexts\Api;
 use AppBundle\Model\LinkModel;
 use AppBundle\Services\ApiPrepared;
 use AppBundle\Services\ImageFromUrl;
+use AppBundle\Services\UrlExtractor;
+use AppBundle\Services\UrlValidator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,24 +21,28 @@ class ApiCreateLinkContext extends LinkModel
 
     private $em;
     private $jsonRepsonse;
-    private $imageFromUrl;
+    private $urlExtractor;
+    private $urlValidator;
     private $data = array(
         'url'           => null,
         'title'         => null,
         'description'   => null,
         'category'      => null,
         'image'         => null,
+        'author'        => null,
         'autopopulate'  => false
     );
 
     public function __construct(
         EntityManager $entityManager,
         ApiPrepared $jsonResponse,
-        ImageFromUrl $imageFromUrl
+        UrlExtractor $urlExtractor,
+        UrlValidator $urlValidator
     ){
         $this->em           = $entityManager;
         $this->jsonRepsonse = $jsonResponse;
-        $this->imageFromUrl = $imageFromUrl;
+        $this->urlExtractor = $urlExtractor;
+        $this->urlValidator = $urlValidator;
     }
 
     public function createLink(){
@@ -45,7 +51,8 @@ class ApiCreateLinkContext extends LinkModel
             $this->data['description'],
             $this->data['url'],
             $this->data['category'],
-            $this->data['image']
+            $this->data['image'],
+            $this->data['author']
         );
         $this->em->persist($newLink);
         $this->em->flush();
@@ -61,7 +68,7 @@ class ApiCreateLinkContext extends LinkModel
     public function populateAndValidate(array $data){
         $errors = array();
 
-        $notRequiredFromRequest = array('image');
+        $notRequiredFromRequest = array('image', 'autopopulate', 'author');
 
         foreach ($this->data as $key => $val){
             if(!isset($data[$key])){
@@ -80,10 +87,16 @@ class ApiCreateLinkContext extends LinkModel
             return $this->jsonRepsonse->error($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        //TODO add url validation
+        if(!$this->urlValidator->isUrlValid($this->data['url'])){
+            return $this->jsonRepsonse->error(array('Url is not valid'), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
-        //TODO move imageFromUrl logic to UrlExtractor
-        $this->data['image'] = $this->imageFromUrl->getImage($this->data['url']);
+        $extractedDataFromUrl = $this->urlExtractor->getDataFromUrl($this->data['url']);
+        if($extractedDataFromUrl) {
+            if(isset($extractedDataFromUrl['image']))       $this->data['image']            = $extractedDataFromUrl['image'];
+        }else{
+            return $this->jsonRepsonse->error($errors, Response::HTTP_EXPECTATION_FAILED, 'Cant procces url data');
+        }
 
         return true;
     }

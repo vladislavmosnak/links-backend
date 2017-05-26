@@ -22,7 +22,6 @@ class ApiCreateAutoPopulateContext extends LinkModel
 
     private $em;
     private $jsonRepsonse;
-    private $imageFromUrl;
     private $urlExtractor;
     private $urlValidator;
     private $data = array(
@@ -30,18 +29,17 @@ class ApiCreateAutoPopulateContext extends LinkModel
         'url'           => null,
         'description'   => null,
         'category'      => null,
-        'image'         => null
+        'image'         => null,
+        'author'        => null,
     );
 
     public function __construct(
         EntityManager $entityManager,
         ApiPrepared $apiPrepared,
-        ImageFromUrl $imageFromUrl,
         UrlExtractor $urlExtractor,
         UrlValidator $urlValidator){
         $this->em           = $entityManager;
         $this->jsonRepsonse = $apiPrepared;
-        $this->imageFromUrl = $imageFromUrl;
         $this->urlExtractor = $urlExtractor;
         $this->urlValidator = $urlValidator;
     }
@@ -52,7 +50,8 @@ class ApiCreateAutoPopulateContext extends LinkModel
             $this->data['description'],
             $this->data['url'],
             $this->data['category'],
-            $this->data['image']
+            $this->data['image'],
+            $this->data['author']
         );
 
         $this->em->persist($newLink);
@@ -69,7 +68,7 @@ class ApiCreateAutoPopulateContext extends LinkModel
     public function populateAndValidate($data){
         $errors = array();
 
-        $notRequiredFromRequest = array('title', 'description', 'image');
+        $notRequiredFromRequest = array('title', 'description', 'image', 'author');
 
         foreach ($this->data as $key => $val){
             if(!isset($data[$key])){
@@ -89,17 +88,15 @@ class ApiCreateAutoPopulateContext extends LinkModel
         }
 
         if(!$this->urlValidator->isUrlValid($this->data['url'])){
-            return $this->jsonResponse->error(array('Url is not valid'), Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->jsonRepsonse->error(array('Url is not valid'), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        //TODO move imageFromUrl logic to UrlExtractor
-        $this->data['image'] = $this->imageFromUrl->getImage($this->data['url']);
-
-        //TODO what if extractor fails in just one field?
         $extractedDataFromUrl = $this->urlExtractor->getDataFromUrl($this->data['url']);
         if($extractedDataFromUrl) {
-            (isset($extractedDataFromUrl['title'])) ? $this->data['title'] = $extractedDataFromUrl['title'] : $this->data['title'] = 'Default title';
-            (isset($extractedDataFromUrl['description'])) ? $this->data['description'] = $extractedDataFromUrl['title'] : $this->data['description'] = 'Default description';
+            if(isset($extractedDataFromUrl['author']))      $this->data['author']           = $extractedDataFromUrl['author'];
+            if(isset($extractedDataFromUrl['title']))       $this->data['title']            = $extractedDataFromUrl['title'];
+            if(isset($extractedDataFromUrl['description'])) $this->data['description']      = $extractedDataFromUrl['description'];
+            if(isset($extractedDataFromUrl['image']))       $this->data['image']            = $extractedDataFromUrl['image'];
         }else{
             return $this->jsonRepsonse->error($errors, Response::HTTP_EXPECTATION_FAILED, 'Cant procces url data');
         }

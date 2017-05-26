@@ -42,17 +42,19 @@ class GetUrlInfoContext extends LinkModel
         $data = array();
 
         $extractedDataFromUrl = $this->urlExtractor->getDataFromUrl($this->data['url']);
+        //TODO alweys return same array definition
+        if(isset($extractedDataFromUrl['title']))       $data['title']          = $extractedDataFromUrl['title'];
+        if(isset($extractedDataFromUrl['description'])) $data['description']    = $extractedDataFromUrl['description'];
+        if(isset($extractedDataFromUrl['author']))      $data['author']         = $extractedDataFromUrl['author'];
+        if(isset($extractedDataFromUrl['image']))       $data['image']          = $extractedDataFromUrl['image'];
 
-        (isset($extractedDataFromUrl['title'])) ? $this->data['title']              = $data['title'] : $this->data['title'] = '';
-        (isset($extractedDataFromUrl['description'])) ? $this->data['description']  = $data['description'] : $this->data['description'] = '';
-        
         return $data;
     }
 
     public function extractInfoFromUrlResponse(){
         $urlInfo = $this->extractInfoFromUrl();
         if(count($urlInfo)) $message = 'Url info';
-        else $message = 'Cant Extract info';
+        else $message = 'Can\'t Extract info';
         return $this->jsonResponse->success($urlInfo, $message, Response::HTTP_OK);
     }
 
