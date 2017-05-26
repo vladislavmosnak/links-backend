@@ -29,7 +29,7 @@ services:
 
     app.contexts_api.api_create_link_context:
         class: AppBundle\Contexts\Api\ApiCreateLinkContext
-        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.services.url_extractor']
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.services.url_extractor', '@app.services.url_validator']
 
     app.contexts_api.api_create_auto_populate_context:
         class: AppBundle\Contexts\Api\ApiCreateAutoPopulateContext

@@ -1,6 +1,5 @@
 Save links by category
 ========================
-* TODO add api documentation
 * TODO finish search api by category
 * TODO create search by tags (keywords)
 * TODO as a user i can select featured links

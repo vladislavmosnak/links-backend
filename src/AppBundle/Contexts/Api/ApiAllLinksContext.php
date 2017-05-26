@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: vladi
- * Date: 21.5.2017.
- * Time: 18.40
- */
-
 namespace AppBundle\Contexts\Api;
 
 

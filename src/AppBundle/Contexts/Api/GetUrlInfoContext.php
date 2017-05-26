@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: vmosnak
- * Date: 5/25/17
- * Time: 12:36 PM
- */
-
 namespace AppBundle\Contexts\Api;
 
 
