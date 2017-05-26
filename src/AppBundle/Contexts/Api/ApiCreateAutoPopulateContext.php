@@ -81,6 +81,7 @@ class ApiCreateAutoPopulateContext extends LinkModel
             return $this->jsonRepsonse->error($errors, Response::HTTP_BAD_REQUEST);
         }
 
+        //TODO if not provided, detect category or set default one
         $this->data['category'] = $this->em->getRepository('AppBundle:LinkCategory')->find($this->data['category']);
         if(!$this->data['category']){
             $errors[] = 'No category for ID: ' . $data['category'];

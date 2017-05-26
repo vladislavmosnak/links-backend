@@ -42,7 +42,7 @@ class GetUrlInfoContext extends LinkModel
         $data = array();
 
         $extractedDataFromUrl = $this->urlExtractor->getDataFromUrl($this->data['url']);
-        //TODO alweys return same array definition
+        //TODO always return same array definition
         if(isset($extractedDataFromUrl['title']))       $data['title']          = $extractedDataFromUrl['title'];
         if(isset($extractedDataFromUrl['description'])) $data['description']    = $extractedDataFromUrl['description'];
         if(isset($extractedDataFromUrl['author']))      $data['author']         = $extractedDataFromUrl['author'];
@@ -74,10 +74,12 @@ class GetUrlInfoContext extends LinkModel
             return $this->jsonResponse->error($errors, Response::HTTP_BAD_REQUEST);
         }
 
-        if($this->urlValidator->isUrlValid($this->data['url'])){
-            return true;
+        if(!$this->urlValidator->isUrlValid($this->data['url'])){
+            return $this->jsonResponse->error(array('Url is not valid'), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        return $this->jsonResponse->error(array('Url is not valid'), Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        return true;
+
 
 
     }
