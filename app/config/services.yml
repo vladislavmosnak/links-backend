@@ -19,6 +19,7 @@ services:
     app.services.url_extractor:
         class: AppBundle\Services\UrlExtractor
 
+#link contexts
     app.contexts_api.api_all_links_context:
         class: AppBundle\Contexts\Api\ApiAllLinksContext
         arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
@@ -42,3 +43,7 @@ services:
     app.contexts_api.get_url_info_context:
         class: AppBundle\Contexts\Api\GetUrlInfoContext
         arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.services.url_validator', '@app.services.url_extractor']
+#category contexts
+    app.contexts_api.api_all_categories_context:
+        class: AppBundle\Contexts\Api\ApiAllCategoriesContext
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']

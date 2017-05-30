@@ -1,6 +1,10 @@
+#docs
+
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /api/doc
+
+#links
 
 links:
     path:     /api/links
@@ -32,4 +36,11 @@ searchlink:
 getinfofromurl:
     path: /api/link/getinfo
     defaults: { _controller: AppBundle:Link:getUrlInfo }
+    methods: [GET]
+
+#categories
+
+categories:
+    path: /api/categories
+    defaults: { _controller: AppBundle:Category:allCategories }
     methods: [GET]
