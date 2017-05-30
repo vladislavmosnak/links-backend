@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class InitController extends Controller
 {
-
+    //TODO adddocs here
     /**
      * @ApiDoc(description="init call")
      */
