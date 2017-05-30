@@ -34,6 +34,6 @@ class ApiAllCategoriesContext extends CategoryModel
         foreach ($allLinks as $link){
             $allLinksArray[] = parent::toArray($link);
         }
-        return $this->jsonRepsonse->success($allLinksArray, 'All Links', Response::HTTP_OK);
+        return $this->jsonRepsonse->success($allLinksArray, 'All Categories', Response::HTTP_OK);
     }
 }

@@ -19,6 +19,11 @@ services:
     app.services.url_extractor:
         class: AppBundle\Services\UrlExtractor
 
+#init
+    app.contexts_api.api_init_context:
+        class: AppBundle\Contexts\Api\ApiInitContext
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
+
 #link contexts
     app.contexts_api.api_all_links_context:
         class: AppBundle\Contexts\Api\ApiAllLinksContext

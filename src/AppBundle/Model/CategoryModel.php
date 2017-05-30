@@ -18,7 +18,7 @@ class CategoryModel
 //
 //    }
 
-    protected function toArray(LinkCategory $linkCategory){
+    public function toArray(LinkCategory $linkCategory){
         return array(
             'id'            => $linkCategory->getId(),
             'categoryName'  => $linkCategory->getCategoryName()

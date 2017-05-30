@@ -39,7 +39,7 @@ class LinkModel
         return $newLink;
     }
 
-    protected function toArray(Link $link){
+    public function toArray(Link $link){
         return array(
             'id'            => $link->getId(),
             'url'           => $link->getUrl(),

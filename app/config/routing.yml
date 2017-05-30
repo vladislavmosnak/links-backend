@@ -4,6 +4,11 @@ NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /api/doc
 
+#init
+init:
+    path: api/init
+    defaults: { _controller: AppBundle:Init:init}
+
 #links
 
 links:
