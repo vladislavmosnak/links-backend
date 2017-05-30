@@ -13,12 +13,14 @@ class UrlExtractor
             'description'   => null,
             'author'        => null,
             'image'         => null,
+            'keywords'      => null,
         );
         $metaData = get_meta_tags($url);
         if(isset($metaData['title']))           $return['title']        = $metaData['title'];
         if(isset($metaData['description']))     $return['description']  = $metaData['description'];
         if(isset($metaData['author']))          $return['author']       = $metaData['author'];
         if(isset($metaData['twitter:image']))   $return['image']        = $metaData['twitter:image'];
+        if(isset($metaData['keywords']))        $return['keywords']     = $metaData['keywords'];
         return $return;
     }
 

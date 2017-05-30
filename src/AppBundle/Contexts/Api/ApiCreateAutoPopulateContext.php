@@ -2,6 +2,7 @@
 namespace AppBundle\Contexts\Api;
 
 
+use AppBundle\Entity\LinkTags;
 use AppBundle\Model\LinkModel;
 use AppBundle\Services\ApiPrepared;
 use AppBundle\Services\ImageFromUrl;
@@ -24,6 +25,7 @@ class ApiCreateAutoPopulateContext extends LinkModel
         'category'      => null,
         'image'         => null,
         'author'        => null,
+        'linkTags'      => array(),
     );
 
     public function __construct(
@@ -47,6 +49,15 @@ class ApiCreateAutoPopulateContext extends LinkModel
             $this->data['author']
         );
 
+        $linkTags = explode(',', $this->data['linkTags']);
+
+        foreach ($linkTags as $linkTag){
+            $newLinkTag = new LinkTags();
+            $newLinkTag->setLink($newLink);
+            $newLinkTag->setTagName($linkTag);
+            $this->em->persist($newLinkTag); //TODO where to handle this???
+        }
+
         $this->em->persist($newLink);
         $this->em->flush();
 
@@ -61,7 +72,7 @@ class ApiCreateAutoPopulateContext extends LinkModel
     public function populateAndValidate($data){
         $errors = array();
 
-        $notRequiredFromRequest = array('title', 'description', 'image', 'author');
+        $notRequiredFromRequest = array('title', 'description', 'image', 'author', 'linkTags');
 
         foreach ($this->data as $key => $val){
             if(!isset($data[$key])){
@@ -91,6 +102,7 @@ class ApiCreateAutoPopulateContext extends LinkModel
             if(isset($extractedDataFromUrl['title']))       $this->data['title']            = $extractedDataFromUrl['title'];
             if(isset($extractedDataFromUrl['description'])) $this->data['description']      = $extractedDataFromUrl['description'];
             if(isset($extractedDataFromUrl['image']))       $this->data['image']            = $extractedDataFromUrl['image'];
+            if(isset($extractedDataFromUrl['keywords']))    $this->data['linkTags']         = $extractedDataFromUrl['keywords'];
         }else{
             return $this->jsonRepsonse->error($errors, Response::HTTP_EXPECTATION_FAILED, 'Cant procces url data');
         }

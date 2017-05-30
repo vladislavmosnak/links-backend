@@ -66,6 +66,11 @@ class Link
     private $author;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\LinkTags", mappedBy="link")
+     */
+    private $linkTag;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -171,6 +176,20 @@ class Link
         $this->author = $author;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getLinkTag()
+    {
+        return $this->linkTag;
+    }
 
+    /**
+     * @param mixed $linkTag
+     */
+    public function setLinkTag(LinkTags $linkTag)
+    {
+        $this->linkTag[] = $linkTag;
+    }
 
 }

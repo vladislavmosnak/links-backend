@@ -36,6 +36,7 @@ class LinkModel
         $newLink->setCategory($category);
         $newLink->setImage($image);
         $newLink->setAuthor($author);
+
         return $newLink;
     }
 
@@ -50,7 +51,8 @@ class LinkModel
             'category'      => array(
                 'id'    => $link->getCategory()->getId(),
                 'name'  => $link->getCategory()->getCategoryName()
-            )
+            ),
+            //TODO how to return tags???
         );
     }
 }
