@@ -11,11 +11,21 @@ namespace AppBundle\Model;
 
 use AppBundle\Entity\Link;
 use AppBundle\Entity\LinkCategory;
+use AppBundle\Entity\LinkTags;
+use Doctrine\ORM\EntityManager;
 
 class LinkModel
 {
 
-    public function populateLink(
+    private $em;
+    private $linkTagsModel;
+
+    public function __construct(EntityManager $entityManager, LinkTagsModel $linkTagsModel){
+        $this->em               = $entityManager;
+        $this->linkTagsModel    = $linkTagsModel;
+    }
+
+    public function saveLink(
         $title,
         $description,
         $url,
@@ -37,10 +47,18 @@ class LinkModel
         $newLink->setImage($image);
         $newLink->setAuthor($author);
 
+        $this->em->persist($newLink);
+        $this->em->flush();
+
         return $newLink;
     }
 
     public function toArray(Link $link){
+        $tags = $link->getLinkTag();
+        $tagsArray = array();
+        foreach ($tags as $tag){
+            $tagsArray[] = $this->linkTagsModel->toArray($tag);
+        }
         return array(
             'id'            => $link->getId(),
             'url'           => $link->getUrl(),
@@ -52,7 +70,7 @@ class LinkModel
                 'id'    => $link->getCategory()->getId(),
                 'name'  => $link->getCategory()->getCategoryName()
             ),
-            //TODO how to return tags???
+            'tags'      => $tagsArray
         );
     }
 }

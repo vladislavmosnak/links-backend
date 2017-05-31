@@ -4,6 +4,7 @@ namespace AppBundle\Contexts\Api;
 
 use AppBundle\Entity\LinkTags;
 use AppBundle\Model\LinkModel;
+use AppBundle\Model\LinkTagsModel;
 use AppBundle\Services\ApiPrepared;
 use AppBundle\Services\ImageFromUrl;
 use AppBundle\Services\UrlExtractor;
@@ -11,10 +12,12 @@ use AppBundle\Services\UrlValidator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiCreateAutoPopulateContext extends LinkModel
+class ApiCreateAutoPopulateContext
 {
 
     private $em;
+    private $linksModel;
+    private $linksTagModel;
     private $jsonRepsonse;
     private $urlExtractor;
     private $urlValidator;
@@ -30,43 +33,40 @@ class ApiCreateAutoPopulateContext extends LinkModel
 
     public function __construct(
         EntityManager $entityManager,
+        LinkModel $linkModel,
+        LinkTagsModel $linkTagsModel,
         ApiPrepared $apiPrepared,
         UrlExtractor $urlExtractor,
         UrlValidator $urlValidator){
-        $this->em           = $entityManager;
-        $this->jsonRepsonse = $apiPrepared;
-        $this->urlExtractor = $urlExtractor;
-        $this->urlValidator = $urlValidator;
+        $this->em               = $entityManager;
+        $this->linksModel       = $linkModel;
+        $this->linksTagModel    = $linkTagsModel;
+        $this->jsonRepsonse     = $apiPrepared;
+        $this->urlExtractor     = $urlExtractor;
+        $this->urlValidator     = $urlValidator;
     }
 
     public function createLink(){
-        $newLink = parent::populateLink(
-            $this->data['title'],
+
+        $newLink = $this->linksModel->saveLink($this->data['title'],
             $this->data['description'],
             $this->data['url'],
             $this->data['category'],
             $this->data['image'],
-            $this->data['author']
-        );
+            $this->data['author']);
 
         $linkTags = explode(',', $this->data['linkTags']);
-
         foreach ($linkTags as $linkTag){
-            $newLinkTag = new LinkTags();
-            $newLinkTag->setLink($newLink);
-            $newLinkTag->setTagName($linkTag);
-            $this->em->persist($newLinkTag); //TODO where to handle this???
+            $newLinkTag = $this->linksTagModel->saveLinkTag($linkTag, $newLink);
+            $newLink->setLinkTag($newLinkTag);
         }
-
-        $this->em->persist($newLink);
-        $this->em->flush();
 
         return $newLink;
     }
 
     public function createLinkResponse(){
         $newLink = $this->createLink();
-        return $this->jsonRepsonse->success(parent::toArray($newLink), 'Link created', Response::HTTP_CREATED);
+        return $this->jsonRepsonse->success($this->linksModel->toArray($newLink), 'Link created', Response::HTTP_CREATED);
     }
 
     public function populateAndValidate($data){
