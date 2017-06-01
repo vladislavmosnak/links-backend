@@ -28,7 +28,7 @@ class ApiCreateAutoPopulateContext
         'category'      => null,
         'image'         => null,
         'author'        => null,
-        'linkTags'      => array(),
+        'linkTags'      => null,
     );
 
     public function __construct(
@@ -47,7 +47,12 @@ class ApiCreateAutoPopulateContext
     }
 
     public function createLink(){
-        $linkTags = explode(',', $this->data['linkTags']);
+        if($this->data['linkTags']){
+            $linkTags = explode(',', $this->data['linkTags']);
+        }else{
+            $linkTags = array();
+        }
+
 
         $newLink = $this->linksModel->saveLink(
             $this->data['title'],

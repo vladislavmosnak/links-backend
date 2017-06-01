@@ -49,9 +49,11 @@ class LinkModel
 
         $this->em->persist($newLink);
 
-        foreach ($linkTags as $linkTag){
-            $newLinkTag = $this->linkTagsModel->saveLinkTag($linkTag, $newLink);
-            $newLink->setLinkTag($newLinkTag);
+        if(count($linkTags) > 0){
+            foreach ($linkTags as $linkTag){
+                $newLinkTag = $this->linkTagsModel->saveLinkTag($linkTag, $newLink);
+                $newLink->setLinkTag($newLinkTag);
+            }
         }
 
         $this->em->flush();
