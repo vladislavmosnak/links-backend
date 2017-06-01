@@ -47,19 +47,16 @@ class ApiCreateAutoPopulateContext
     }
 
     public function createLink(){
+        $linkTags = explode(',', $this->data['linkTags']);
 
-        $newLink = $this->linksModel->saveLink($this->data['title'],
+        $newLink = $this->linksModel->saveLink(
+            $this->data['title'],
             $this->data['description'],
             $this->data['url'],
             $this->data['category'],
             $this->data['image'],
-            $this->data['author']);
-
-        $linkTags = explode(',', $this->data['linkTags']);
-        foreach ($linkTags as $linkTag){
-            $newLinkTag = $this->linksTagModel->saveLinkTag($linkTag, $newLink);
-            $newLink->setLinkTag($newLinkTag);
-        }
+            $this->data['author'],
+            $linkTags);
 
         return $newLink;
     }

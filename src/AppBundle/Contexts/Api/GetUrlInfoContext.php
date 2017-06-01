@@ -9,7 +9,7 @@ use AppBundle\Services\UrlValidator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 
-class GetUrlInfoContext extends LinkModel
+class GetUrlInfoContext
 {
 
     private $jsonResponse;

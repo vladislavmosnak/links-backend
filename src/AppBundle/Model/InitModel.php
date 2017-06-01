@@ -12,16 +12,22 @@ namespace AppBundle\Model;
 class InitModel
 {
 
+    private $linkModel;
+    private $categoryModel;
+
+    public function __construct(LinkModel $linkModel, CategoryModel $categoryModel){
+        $this->linkModel        = $linkModel;
+        $this->categoryModel    = $categoryModel;
+    }
+
     public function toArray($links, $categories){
-        $linkModel      = new LinkModel(); //TODO dependency
-        $categoryModel  = new CategoryModel();
         $linksArray         = array();
         $categoriesArray    = array();
         foreach ($links as $link){
-            $linksArray[] = $linkModel->toArray($link);
+            $linksArray[] = $this->linkModel->toArray($link);
         }
         foreach ($categories as $category){
-            $categoriesArray[] = $categoryModel->toArray($category);
+            $categoriesArray[] = $this->categoryModel->toArray($category);
         }
         return array(
             'links'         => $linksArray,

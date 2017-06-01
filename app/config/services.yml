@@ -22,29 +22,37 @@ services:
 #init
     app.contexts_api.api_init_context:
         class: AppBundle\Contexts\Api\ApiInitContext
-        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.model.init_model']
 
 #models
-    app.model.link_model:
-        class: AppBundle\Model\LinkModel
-        arguments: ['@doctrine.orm.entity_manager', '@app.model.link_tags_model']
+    app.model.init_model:
+        class: AppBundle\Model\InitModel
+        arguments: ['@app.model.link_model', '@app.contexts_api.api_all_categories_context']
 
     app.model.link_tags_model:
         class: AppBundle\Model\LinkTagsModel
         arguments: ['@doctrine.orm.entity_manager']
 
+    app.model.link_model:
+        class: AppBundle\Model\LinkModel
+        arguments: ['@doctrine.orm.entity_manager', '@app.model.link_tags_model']
+
+    app.model.category_model:
+        class: AppBundle\Model\CategoryModel
+        arguments: ['@doctrine.orm.entity_manager']
+
 #link contexts
     app.contexts_api.api_all_links_context:
         class: AppBundle\Contexts\Api\ApiAllLinksContext
-        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.model.link_model']
 
     app.contexts_api.api_single_link_context:
         class: AppBundle\Contexts\Api\ApiSingleLinkContext
-        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.model.link_model']
 
     app.contexts_api.api_create_link_context:
         class: AppBundle\Contexts\Api\ApiCreateLinkContext
-        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.services.url_extractor', '@app.services.url_validator']
+        arguments: ['@doctrine.orm.entity_manager', '@app.model.link_model', '@app.services.json_response', '@app.services.url_extractor', '@app.services.url_validator']
 
     app.contexts_api.api_create_auto_populate_context:
         class: AppBundle\Contexts\Api\ApiCreateAutoPopulateContext
@@ -60,4 +68,4 @@ services:
 #category contexts
     app.contexts_api.api_all_categories_context:
         class: AppBundle\Contexts\Api\ApiAllCategoriesContext
-        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response']
+        arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.model.category_model']

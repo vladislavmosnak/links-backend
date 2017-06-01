@@ -10,13 +10,16 @@ namespace AppBundle\Model;
 
 
 use AppBundle\Entity\LinkCategory;
+use Doctrine\ORM\EntityManager;
 
 class CategoryModel
 {
 
-//    public function populateCategory(
-//
-//    }
+    private $em;
+
+    public function __construct(EntityManager $entityManager){
+        $this->em = $entityManager;
+    }
 
     public function toArray(LinkCategory $linkCategory){
         return array(

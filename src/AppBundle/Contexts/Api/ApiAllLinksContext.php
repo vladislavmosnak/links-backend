@@ -7,13 +7,15 @@ use AppBundle\Services\ApiPrepared;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiAllLinksContext extends LinkModel
+class ApiAllLinksContext
 {
     private $em;
+    private $linkModel;
     private $jsonRepsonse;
 
-    public function __construct(EntityManager $entityManager, ApiPrepared $jsonResponse){
+    public function __construct(EntityManager $entityManager, ApiPrepared $jsonResponse, LinkModel $linkModel){
         $this->em           = $entityManager;
+        $this->linkModel    = $linkModel;
         $this->jsonRepsonse = $jsonResponse;
     }
 
@@ -25,7 +27,7 @@ class ApiAllLinksContext extends LinkModel
         $allLinks = $this->getAllLinks();
         $allLinksArray = array();
         foreach ($allLinks as $link){
-            $allLinksArray[] = parent::toArray($link);
+            $allLinksArray[] = $this->linkModel->toArray($link);
         }
         return $this->jsonRepsonse->success($allLinksArray, 'All Links', Response::HTTP_OK);
     }

@@ -9,10 +9,11 @@ use AppBundle\Services\UrlValidator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiCreateLinkContext extends LinkModel
+class ApiCreateLinkContext
 {
 
     private $em;
+    private $linkModel;
     private $jsonRepsonse;
     private $urlExtractor;
     private $urlValidator;
@@ -23,39 +24,41 @@ class ApiCreateLinkContext extends LinkModel
         'category'      => null,
         'image'         => null,
         'author'        => null,
+        'linktags'      => null,
         'autopopulate'  => false
     );
 
     public function __construct(
         EntityManager $entityManager,
+        LinkModel $linkModel,
         ApiPrepared $jsonResponse,
         UrlExtractor $urlExtractor,
         UrlValidator $urlValidator
     ){
         $this->em           = $entityManager;
+        $this->linkModel    = $linkModel;
         $this->jsonRepsonse = $jsonResponse;
         $this->urlExtractor = $urlExtractor;
         $this->urlValidator = $urlValidator;
     }
 
     public function createLink(){
-        $newLink = parent::populateLink(
+        $newLink = $this->linkModel->saveLink(
             $this->data['title'],
             $this->data['description'],
             $this->data['url'],
             $this->data['category'],
             $this->data['image'],
-            $this->data['author']
+            $this->data['author'],
+            $this->data['linktags']
         );
-        $this->em->persist($newLink);
-        $this->em->flush();
 
         return $newLink;
     }
 
     public function createLinkResponse(){
         $newLink = $this->createLink();
-        return $this->jsonRepsonse->success(parent::toArray($newLink), 'Link created', Response::HTTP_CREATED);
+        return $this->jsonRepsonse->success($this->linkModel->toArray($newLink), 'Link created', Response::HTTP_CREATED);
     }
 
     public function populateAndValidate(array $data){

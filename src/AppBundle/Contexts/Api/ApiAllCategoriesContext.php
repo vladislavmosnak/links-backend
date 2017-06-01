@@ -14,14 +14,16 @@ use AppBundle\Services\ApiPrepared;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiAllCategoriesContext extends CategoryModel
+class ApiAllCategoriesContext
 {
     private $em;
+    private $categoryModel;
     private $jsonRepsonse;
 
-    public function __construct(EntityManager $entityManager, ApiPrepared $jsonResponse){
-        $this->em           = $entityManager;
-        $this->jsonRepsonse = $jsonResponse;
+    public function __construct(EntityManager $entityManager, ApiPrepared $jsonResponse, CategoryModel $categoryModel){
+        $this->em               = $entityManager;
+        $this->categoryModel    = $categoryModel;
+        $this->jsonRepsonse     = $jsonResponse;
     }
 
     public function getAllCategories(){
@@ -32,7 +34,7 @@ class ApiAllCategoriesContext extends CategoryModel
         $allLinks = $this->getAllCategories();
         $allLinksArray = array();
         foreach ($allLinks as $link){
-            $allLinksArray[] = parent::toArray($link);
+            $allLinksArray[] = $this->categoryModel->toArray($link);
         }
         return $this->jsonRepsonse->success($allLinksArray, 'All Categories', Response::HTTP_OK);
     }

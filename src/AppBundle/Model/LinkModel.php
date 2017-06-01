@@ -11,7 +11,6 @@ namespace AppBundle\Model;
 
 use AppBundle\Entity\Link;
 use AppBundle\Entity\LinkCategory;
-use AppBundle\Entity\LinkTags;
 use Doctrine\ORM\EntityManager;
 
 class LinkModel
@@ -31,7 +30,8 @@ class LinkModel
         $url,
         LinkCategory $category,
         $image,
-        $author
+        $author,
+        $linkTags = array()
     ){
 
         if(!$title)         $title                  = 'Default title';
@@ -48,6 +48,12 @@ class LinkModel
         $newLink->setAuthor($author);
 
         $this->em->persist($newLink);
+
+        foreach ($linkTags as $linkTag){
+            $newLinkTag = $this->linkTagsModel->saveLinkTag($linkTag, $newLink);
+            $newLink->setLinkTag($newLinkTag);
+        }
+
         $this->em->flush();
 
         return $newLink;

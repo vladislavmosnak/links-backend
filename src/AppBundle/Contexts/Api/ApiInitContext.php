@@ -13,14 +13,16 @@ use AppBundle\Model\InitModel;
 use AppBundle\Services\ApiPrepared;
 use Doctrine\ORM\EntityManager;
 
-class ApiInitContext extends InitModel
+class ApiInitContext
 {
 
     private $em;
+    private $initModel;
     private $jsonRepsonse;
 
-    public function __construct(EntityManager $entityManager, ApiPrepared $jsonResponse){
+    public function __construct(EntityManager $entityManager, ApiPrepared $jsonResponse, InitModel $initModel){
         $this->em           = $entityManager;
+        $this->initModel    = $initModel;
         $this->jsonRepsonse = $jsonResponse;
     }
 
@@ -32,7 +34,7 @@ class ApiInitContext extends InitModel
 
     public function getInitDataResponse(){
         list($links, $categories) = $this->getInitData();
-        return $this->jsonRepsonse->success(parent::toArray($links, $categories));
+        return $this->jsonRepsonse->success($this->initModel->toArray($links, $categories));
     }
 
 }
