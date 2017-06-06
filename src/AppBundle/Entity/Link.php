@@ -65,6 +65,18 @@ class Link
      */
     private $author;
 
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $created_at;
+
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deleted_at;
+
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\LinkTags", mappedBy="link")
      */
@@ -174,6 +186,22 @@ class Link
     public function setAuthor($author)
     {
         $this->author = $author;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param mixed $created_at
+     */
+    public function setCreatedAt($created_at)
+    {
+        $this->created_at = $created_at;
     }
 
     /**

@@ -46,6 +46,7 @@ class LinkModel
         $newLink->setCategory($category);
         $newLink->setImage($image);
         $newLink->setAuthor($author);
+        $newLink->setCreatedAt(new \DateTime('now', new \DateTimeZone('UTC')));
 
         $this->em->persist($newLink);
 
@@ -64,8 +65,10 @@ class LinkModel
     public function toArray(Link $link){
         $tags = $link->getLinkTag();
         $tagsArray = array();
-        foreach ($tags as $tag){
-            $tagsArray[] = $this->linkTagsModel->toArray($tag);
+        if($tags){
+            foreach ($tags as $tag){
+                $tagsArray[] = $this->linkTagsModel->toArray($tag);
+            }
         }
         return array(
             'id'            => $link->getId(),
@@ -73,6 +76,7 @@ class LinkModel
             'title'         => $link->getTitle(),
             'description'   => $link->getDescription(),
             'image'         => $link->getImage(),
+            'created_at'    => $link->getCreatedAt(),
             'author'        => $link->getAuthor(),
             'category'      => array(
                 'id'    => $link->getCategory()->getId(),

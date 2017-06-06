@@ -52,8 +52,6 @@ class ApiCreateAutoPopulateContext
         }else{
             $linkTags = array();
         }
-
-
         $newLink = $this->linksModel->saveLink(
             $this->data['title'],
             $this->data['description'],
