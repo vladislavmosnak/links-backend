@@ -17,9 +17,15 @@ class LinkTagsModel
 {
 
     private $em;
+    private $repository;
 
     public function __construct(EntityManager $entityManager){
         $this->em = $entityManager;
+        $this->repository = $this->em->getRepository('AppBundle:LinkTags');
+    }
+
+    public function getRepository(){
+        return $this->repository;
     }
 
     public function saveLinkTag(

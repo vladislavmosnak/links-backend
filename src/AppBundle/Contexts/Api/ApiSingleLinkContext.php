@@ -20,7 +20,7 @@ class ApiSingleLinkContext
     }
 
     public function getSingleLink($id){
-        return $this->em->getRepository('AppBundle:Link')->find($id);
+        return $this->linkModel->getSingleLink($id);
     }
 
     public function getSingleLinkResponse($id){

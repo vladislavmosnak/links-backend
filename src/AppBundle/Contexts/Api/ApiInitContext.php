@@ -9,7 +9,9 @@
 namespace AppBundle\Contexts\Api;
 
 
+use AppBundle\Model\CategoryModel;
 use AppBundle\Model\InitModel;
+use AppBundle\Model\LinkModel;
 use AppBundle\Services\ApiPrepared;
 use Doctrine\ORM\EntityManager;
 
@@ -18,17 +20,27 @@ class ApiInitContext
 
     private $em;
     private $initModel;
+    private $linkModel;
+    private $categoryModel;
     private $jsonRepsonse;
 
-    public function __construct(EntityManager $entityManager, ApiPrepared $jsonResponse, InitModel $initModel){
+    public function __construct(
+        EntityManager $entityManager,
+        ApiPrepared $jsonResponse,
+        InitModel $initModel,
+        LinkModel $linkModel,
+        CategoryModel $categoryModel
+        ){
         $this->em           = $entityManager;
         $this->initModel    = $initModel;
         $this->jsonRepsonse = $jsonResponse;
+        $this->linkModel    = $linkModel;
+        $this->categoryModel= $categoryModel;
     }
 
     public function getInitData(){
-        $links      = $this->em->getRepository('AppBundle:Link')->findAll();
-        $categories = $this->em->getRepository('AppBundle:LinkCategory')->findAll();
+        $links      = $this->linkModel->getAllLinks();
+        $categories = $this->categoryModel->getAllCategories();
         return array($links, $categories);
     }
 

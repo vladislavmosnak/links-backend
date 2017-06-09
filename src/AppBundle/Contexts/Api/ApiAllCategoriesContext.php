@@ -27,7 +27,7 @@ class ApiAllCategoriesContext
     }
 
     public function getAllCategories(){
-        return $this->em->getRepository('AppBundle:LinkCategory')->findAll();
+        return $this->categoryModel->getAllCategories();
     }
 
     public function getAllLinksResponse(){

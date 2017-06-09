@@ -27,6 +27,10 @@ class LinkCategory
      */
     private $categoryName;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deleted_at;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Link", mappedBy="category")
@@ -63,6 +67,24 @@ class LinkCategory
     /**
      * @return mixed
      */
+    public function getDeletedAt()
+    {
+        return $this->deleted_at;
+    }
+
+    /**
+     * @param mixed $deleted_at
+     */
+    public function setDeletedAt($deleted_at)
+    {
+        $this->deleted_at = $deleted_at;
+    }
+
+
+
+    /**
+     * @return mixed
+     */
     public function getLinks()
     {
         return $this->links;
@@ -75,8 +97,4 @@ class LinkCategory
     {
         $this->links = $links;
     }
-
-
-
-
 }

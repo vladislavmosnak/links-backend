@@ -20,7 +20,7 @@ class ApiAllLinksContext
     }
 
     public function getAllLinks(){
-        return $this->em->getRepository('AppBundle:Link')->findAll();
+        return $this->linkModel->getAllLinks();
     }
 
     public function getAllLinksResponse(){

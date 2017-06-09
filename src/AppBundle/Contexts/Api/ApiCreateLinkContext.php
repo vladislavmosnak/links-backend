@@ -1,6 +1,8 @@
 <?php
 namespace AppBundle\Contexts\Api;
 
+use AppBundle\Exceptions\EntityDeletedException;
+use AppBundle\Model\CategoryModel;
 use AppBundle\Model\LinkModel;
 use AppBundle\Services\ApiPrepared;
 use AppBundle\Services\ImageFromUrl;
@@ -17,6 +19,7 @@ class ApiCreateLinkContext
     private $jsonRepsonse;
     private $urlExtractor;
     private $urlValidator;
+    private $categoryModel;
     private $data = array(
         'url'           => null,
         'title'         => null,
@@ -33,13 +36,15 @@ class ApiCreateLinkContext
         LinkModel $linkModel,
         ApiPrepared $jsonResponse,
         UrlExtractor $urlExtractor,
-        UrlValidator $urlValidator
+        UrlValidator $urlValidator,
+        CategoryModel $categoryModel
     ){
         $this->em           = $entityManager;
         $this->linkModel    = $linkModel;
         $this->jsonRepsonse = $jsonResponse;
         $this->urlExtractor = $urlExtractor;
         $this->urlValidator = $urlValidator;
+        $this->categoryModel= $categoryModel;
     }
 
     public function createLink(){
@@ -77,7 +82,16 @@ class ApiCreateLinkContext
             return $this->jsonRepsonse->error($errors, Response::HTTP_BAD_REQUEST);
         }
 
-        $this->data['category'] = $this->em->getRepository('AppBundle:LinkCategory')->find($this->data['category']);
+        try{
+            $this->data['category'] = $this->categoryModel->getSingleCategory($this->data['category']);
+        }catch (EntityDeletedException $e){
+            $errors[] = 'Category was deleted: ' . $data['category'];
+            return $this->jsonRepsonse->error($errors, Response::HTTP_GONE);
+        }catch (\Exception $e){
+            $errors[] = 'Server error: ' . $e->getMessage() . 'Trying to get category from category model';
+            return $this->jsonRepsonse->error($errors, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         if(!$this->data['category']){
             $errors[] = 'No category for ID: ' . $data['category'];
             return $this->jsonRepsonse->error($errors, Response::HTTP_UNPROCESSABLE_ENTITY);

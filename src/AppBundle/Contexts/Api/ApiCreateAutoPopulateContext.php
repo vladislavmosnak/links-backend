@@ -3,6 +3,8 @@ namespace AppBundle\Contexts\Api;
 
 
 use AppBundle\Entity\LinkTags;
+use AppBundle\Exceptions\EntityDeletedException;
+use AppBundle\Model\CategoryModel;
 use AppBundle\Model\LinkModel;
 use AppBundle\Model\LinkTagsModel;
 use AppBundle\Services\ApiPrepared;
@@ -21,6 +23,7 @@ class ApiCreateAutoPopulateContext
     private $jsonRepsonse;
     private $urlExtractor;
     private $urlValidator;
+    private $categoryModel;
     private $data = array(
         'title'         => null,
         'url'           => null,
@@ -37,13 +40,16 @@ class ApiCreateAutoPopulateContext
         LinkTagsModel $linkTagsModel,
         ApiPrepared $apiPrepared,
         UrlExtractor $urlExtractor,
-        UrlValidator $urlValidator){
+        UrlValidator $urlValidator,
+        CategoryModel $categoryModel
+        ){
         $this->em               = $entityManager;
         $this->linksModel       = $linkModel;
         $this->linksTagModel    = $linkTagsModel;
         $this->jsonRepsonse     = $apiPrepared;
         $this->urlExtractor     = $urlExtractor;
         $this->urlValidator     = $urlValidator;
+        $this->categoryModel    = $categoryModel;
     }
 
     public function createLink(){
@@ -86,10 +92,16 @@ class ApiCreateAutoPopulateContext
         }
 
         //TODO if not provided, detect category or set default one
-        $this->data['category'] = $this->em->getRepository('AppBundle:LinkCategory')->find($this->data['category']);
+        try{
+            $this->data['category'] = $this->categoryModel->getSingleCategory($this->data['category']);
+        }catch (EntityDeletedException $e){
+            $errors[] = 'Category was deleted: ' . $data['category'];
+            return $this->jsonRepsonse->error($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         if(!$this->data['category']){
             $errors[] = 'No category for ID: ' . $data['category'];
-            return $this->jsonRepsonse->error($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->jsonRepsonse->error($errors, Response::HTTP_GONE);
         }
 
         if(!$this->urlValidator->isUrlValid($this->data['url'])){
