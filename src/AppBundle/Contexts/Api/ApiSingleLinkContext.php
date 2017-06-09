@@ -2,6 +2,7 @@
 namespace AppBundle\Contexts\Api;
 
 
+use AppBundle\Exceptions\EntityDeletedException;
 use AppBundle\Model\LinkModel;
 use AppBundle\Services\ApiPrepared as jresponse;
 use Doctrine\ORM\EntityManager;
@@ -24,7 +25,12 @@ class ApiSingleLinkContext
     }
 
     public function getSingleLinkResponse($id){
-        $link = $this->getSingleLink($id);
+        try{
+            $link = $this->getSingleLink($id);
+        }catch (EntityDeletedException $e){
+            return $this->jsonRepsonse->error(array('Link was deleted'), Response::HTTP_GONE);
+        }
+
         if(!$link){
             return $this->jsonRepsonse->error(array('Link not found'), Response::HTTP_NOT_FOUND);
         }

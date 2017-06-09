@@ -11,6 +11,7 @@ namespace AppBundle\Model;
 
 use AppBundle\Entity\Link;
 use AppBundle\Entity\LinkCategory;
+use AppBundle\Exceptions\EntityDeletedException;
 use Doctrine\ORM\EntityManager;
 
 class LinkModel
@@ -99,7 +100,13 @@ class LinkModel
     }
 
     public function getSingleLink($id){
-        return $this->repository->find($id);
+        $link = $this->repository->find($id);
+        if(!$link){
+            return null;
+        }
+        if($link->getDeletedAt()){
+            throw new EntityDeletedException();
+        }
     }
 
 
