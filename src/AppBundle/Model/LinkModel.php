@@ -31,6 +31,21 @@ class LinkModel
         return $this->repository;
     }
 
+    public function updateLink(Link $link){
+        $link->setUpdatedAt(new \DateTime('now', new \DateTimeZone('UTC')));
+        $this->em->flush();
+        return $link;
+    }
+
+    public function deleteLink($linkId){
+        $link = $this->getSingleLink($linkId);
+        if(!$link)
+            return false;
+        $link->setDeletedAt(new \DateTime('now', new \DateTimeZone('UTC')));
+        $this->em->flush();
+        return $link;
+    }
+
     public function saveLink(
         $title,
         $description,
@@ -105,8 +120,9 @@ class LinkModel
             return null;
         }
         if($link->getDeletedAt()){
-            throw new EntityDeletedException();
+            return null;
         }
+        return $link;
     }
 
 

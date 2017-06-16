@@ -75,12 +75,20 @@ class Link
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
+    private $updated_at;
+
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
     private $deleted_at;
+
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\LinkTags", mappedBy="link")
      */
     private $linkTag;
+
 
     /**
      * Get id
@@ -203,6 +211,23 @@ class Link
     {
         $this->created_at = $created_at;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * @param mixed $updated_at
+     */
+    public function setUpdatedAt($updated_at)
+    {
+        $this->updated_at = $updated_at;
+    }
+
 
     /**
      * @return mixed

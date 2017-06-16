@@ -50,9 +50,17 @@ services:
         class: AppBundle\Contexts\Api\ApiSingleLinkContext
         arguments: ['@doctrine.orm.entity_manager', '@app.services.json_response', '@app.model.link_model']
 
+    app.contexts_api.api_delete_link_context:
+        class: AppBundle\Contexts\Api\ApiDeleteLinkContext
+        arguments: ['@app.model.link_model', '@app.services.json_response']
+
     app.contexts_api.api_create_link_context:
         class: AppBundle\Contexts\Api\ApiCreateLinkContext
         arguments: ['@doctrine.orm.entity_manager', '@app.model.link_model', '@app.services.json_response', '@app.services.url_extractor', '@app.services.url_validator', '@app.model.category_model']
+
+    app.contexts_api.api_update_link_context:
+        class: AppBundle\Contexts\Api\ApiUpdateLinkContext
+        arguments: ['@app.model.link_model', '@app.services.json_response', '@app.model.category_model']
 
     app.contexts_api.api_create_auto_populate_context:
         class: AppBundle\Contexts\Api\ApiCreateAutoPopulateContext

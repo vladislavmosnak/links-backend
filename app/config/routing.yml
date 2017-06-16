@@ -23,6 +23,13 @@ link:
         id: '\d+'
     methods: [GET]
 
+deletelink:
+    path:     /api/link/{id}
+    defaults: { _controller: AppBundle:Link:delete }
+    requirements:
+        id: '\d+'
+    methods: [DELETE]
+
 newlink:
     path: /api/link
     defaults: { _controller: AppBundle:Link:create }
@@ -32,6 +39,13 @@ newlinkautopopulate:
     path: /api/link/autopopulate
     defaults: { _controller: AppBundle:Link:createAutoPopulate }
     methods: [POST]
+
+updatelink:
+    path: /api/link/{id}
+    defaults: { _controller: AppBundle:Link:update }
+    requirements:
+        id: '\d+'
+    methods: [PUT]
 
 searchlink:
     path: /api/link/search

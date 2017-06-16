@@ -5,6 +5,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class LinkController extends Controller
 {
@@ -87,6 +88,23 @@ class LinkController extends Controller
         $singleLinkContex = $this->get('app.contexts_api.api_single_link_context');
         $linkResponse = $singleLinkContex->getSingleLinkResponse($id);
         return JsonResponse::create($linkResponse->getData(), $linkResponse->getCode());
+    }
+
+    public function deleteAction($id){
+        $deleteLinkContext          = $this->get('app.contexts_api.api_delete_link_context');
+        $deleteLinkContextResponse  = $deleteLinkContext->deleteLinkResponse($id);
+        return JsonResponse::create($deleteLinkContextResponse->getData(), $deleteLinkContextResponse->getCode());
+    }
+
+    public function updateAction(Request $request, $id){
+        $updateLinkContext = $this->get('app.contexts_api.api_update_link_context');
+        $data = $request->query->all();
+        $data['id'] = $id;
+        $updateLinkContextValidation = $updateLinkContext->populateAndValidate($data);
+        if($updateLinkContextValidation !== true)
+            return JsonResponse::create($updateLinkContextValidation->getData(), $updateLinkContextValidation->getCode());
+        $updatedLinkResponse = $updateLinkContext->updateLinkResponse();
+        return JsonResponse::create($updatedLinkResponse->getData(), $updatedLinkResponse->getCode());
     }
 
     /**
